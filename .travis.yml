@@ -1,30 +1,22 @@
 language: python
 
-# The travis Python version is unrelated to the version we build and test
-# with.  This is set with the MB_PYTHON_VERSION variable.
-python: 3.5
 sudo: required
-dist: trusty
-services: docker
 
 matrix:
   include:
       - os: linux
-          dist: trusty
-          python: 3.6
-          sudo: required
-          services:
-            - docker
-          env:
-            - PIP=pip
-            - CIBW_SKIP="cp33-* cp34-* *i686"
+        python: 3.6
+        services:
+          - docker
+        env:
+          - PIP=pip
       - os: osx
-          language: generic
-          env:
-            - PYVERSION='3.6.0'
-            - CIBW_SKIP="cp33-* cp34-* *i686"
+        language: generic
+        env:
+          - PYVERSION='3.6.0'
 
 before_install:
+- export CIBW_SKIP="cp33-* cp34-* *i686"
 - if [ "$TRAVIS_OS_NAME" == "osx" ]; then brew update; fi
 - if [ "$TRAVIS_OS_NAME" == "osx" ]; then brew outdated | grep -q pyenv && brew upgrade pyenv || true; fi
 - if [ "$TRAVIS_OS_NAME" == "osx" ]; then eval "$(pyenv init -)"; fi
