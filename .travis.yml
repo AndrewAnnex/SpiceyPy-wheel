@@ -2,6 +2,11 @@ language: python
 
 sudo: required
 
+environment:
+  global:
+    - CIBW_TEST_REQUIRES="pytest six numpy"
+    - CIBW_TEST_COMMAND="pytest spiceypy/tests/"
+
 matrix:
   include:
       - os: linux
@@ -33,9 +38,11 @@ install:
 
 script:
 - mv SpiceyPy/* ./
+- ls -lahtr
 - cibuildwheel --output-dir wheelhouse
 - ls wheelhouse/
 
 after_success:
+- ls -lahtr wheelhouse/
 - unzip -l wheelhouse/*
 
