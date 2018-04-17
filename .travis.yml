@@ -15,7 +15,7 @@ matrix:
         env:
           - PYVERSION='3.6.0'
 
-before_install:
+install:
 - export CIBW_SKIP="cp33-* cp34-* *i686"
 - if [ "$TRAVIS_OS_NAME" == "osx" ]; then brew update; fi
 - if [ "$TRAVIS_OS_NAME" == "osx" ]; then brew outdated | grep -q pyenv && brew upgrade pyenv || true; fi
@@ -31,11 +31,11 @@ before_install:
 - pip install twine
 - pip install cibuildwheel==0.7.1
 
-install:
+script:
 - mv SpiceyPy/* ./
 - cibuildwheel --output-dir wheelhouse
+- ls wheelhouse/
 
 after_success:
-- ls wheelhouse/
 - unzip -l wheelhouse/*
 
