@@ -2,11 +2,6 @@ language: python
 
 sudo: required
 
-environment:
-  global:
-    - CIBW_TEST_REQUIRES="pytest six numpy"
-    - CIBW_TEST_COMMAND="pytest spiceypy/tests/"
-
 matrix:
   include:
       - os: linux
@@ -22,6 +17,8 @@ matrix:
 
 install:
 - export CIBW_SKIP="cp33-* cp34-* *i686"
+- export CIBW_TEST_REQUIRES="pytest six numpy"
+- export CIBW_TEST_COMMAND="pytest spiceypy/tests/"
 - if [ "$TRAVIS_OS_NAME" == "osx" ]; then brew update; fi
 - if [ "$TRAVIS_OS_NAME" == "osx" ]; then brew outdated | grep -q pyenv && brew upgrade pyenv || true; fi
 - if [ "$TRAVIS_OS_NAME" == "osx" ]; then eval "$(pyenv init -)"; fi
