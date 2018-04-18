@@ -35,10 +35,12 @@ install:
 
 script:
 - ls -lahtr
-- cibuildwheel --output-dir ./wheelhouse ./SpiceyPy/
-- ls -lahtr ./SpiceyPy/spiceypy/utils/
-- ls -lahtr ./SpiceyPy/spiceypy/dist
 - ls -lahtr ./SpiceyPy/
+- cd ./SpiceyPy/
+- cibuildwheel --output-dir ./wheelhouse
+- ls -lahtr ./spiceypy/utils/
+- ls -lahtr ./spiceypy/dist
+- ls -lahtr ./
 - ls wheelhouse/
 
 after_success:
