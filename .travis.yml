@@ -34,9 +34,11 @@ install:
 - pip install cibuildwheel==0.7.1
 
 script:
-- mv SpiceyPy/* ./
 - ls -lahtr
-- cibuildwheel --output-dir wheelhouse
+- cibuildwheel --output-dir ./wheelhouse ./SpiceyPy/
+- ls -lahtr ./SpiceyPy/spiceypy/utils/
+- ls -lahtr ./SpiceyPy/spiceypy/dist
+- ls -lahtr ./SpiceyPy/
 - ls wheelhouse/
 
 after_success:
