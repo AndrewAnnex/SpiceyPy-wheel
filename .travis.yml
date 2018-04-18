@@ -1,61 +1,49 @@
-env:
-    global:
-        - REPO_DIR=SpiceyPy
-        # Commit from your-project that you want to build
-        - BUILD_COMMIT=wheel_fix_1
-        # pip dependencies to _build_ your project
-        - BUILD_DEPENDS="numpy six wheel certifi"
-        # pip dependencies to _test_ your project.  Include any dependencies
-        # that you need, that are also specified in BUILD_DEPENDS, this will be
-        # a separate install.
-        - TEST_DEPENDS="pytest"
-        - PLAT=x86_64
-        - UNICODE_WIDTH=32
-
 language: python
-# The travis Python version is unrelated to the version we build and test
-# with.  This is set with the MB_PYTHON_VERSION variable.
-python: 3.5
+
 sudo: required
-dist: trusty
-services: docker
 
 matrix:
-  exclude:
-    # Exclude the default Python 3.5 build
-    - python: 3.5
   include:
-    - os: linux
-      env:
-        - MB_PYTHON_VERSION=2.7
-    - os: linux
-      env:
-        - MB_PYTHON_VERSION=3.5
-    - os: linux
-      env:
-        - MB_PYTHON_VERSION=3.6
-    - os: osx
-      language: generic
-      env:
-        - MB_PYTHON_VERSION=2.7
-    - os: osx
-      language: generic
-      env:
-        - MB_PYTHON_VERSION=3.5
-    - os: osx
-      language: generic
-      env:
-        - MB_PYTHON_VERSION=3.6
-
-before_install:
-    - source multibuild/common_utils.sh
-    - source multibuild/travis_steps.sh
-    - before_install
+      - os: linux
+        python: 3.6
+        services:
+          - docker
+        env:
+          - PIP=pip
+      - os: osx
+        language: generic
+        env:
+          - PYVERSION='3.6.0'
 
 install:
-    # Maybe get and clean and patch source
-    - clean_code $REPO_DIR $BUILD_COMMIT
-    - build_wheel $REPO_DIR $PLAT
+- export CIBW_SKIP="cp33-* cp34-* *i686"
+- export CIBW_TEST_REQUIRES="pytest six numpy"
+- export CIBW_TEST_COMMAND="pytest {project}/spiceypy/tests/*"
+- if [ "$TRAVIS_OS_NAME" == "osx" ]; then brew update; fi
+- if [ "$TRAVIS_OS_NAME" == "osx" ]; then brew outdated | grep -q pyenv && brew upgrade pyenv || true; fi
+- if [ "$TRAVIS_OS_NAME" == "osx" ]; then eval "$(pyenv init -)"; fi
+- if [ "$TRAVIS_OS_NAME" == "osx" ]; then pyenv install $PYVERSION; fi
+- if [ "$TRAVIS_OS_NAME" == "osx" ]; then pyenv global $PYVERSION; fi
+- if [ "$TRAVIS_OS_NAME" == "osx" ]; then pyenv versions; fi
+- if [ "$TRAVIS_OS_NAME" == "osx" ]; then python --version; fi
+- pip install -U pip
+- pip install -U wheel
+- pip wheel numpy
+- pip install numpy
+- pip install twine
+- pip install cibuildwheel==0.7.1
 
 script:
-    - install_run $PLAT
+- ls -lahtr
+- ls -lahtr ./SpiceyPy/
+- cd ./SpiceyPy/
+- cibuildwheel --output-dir ./wheelhouse
+- ls -lahtr ./spiceypy/utils/
+- ls -lahtr ./spiceypy/dist
+- ls -lahtr ./
+- ls wheelhouse/
+
+after_success:
+- ls -lahtr wheelhouse/
+- unzip -l wheelhouse/*
+
