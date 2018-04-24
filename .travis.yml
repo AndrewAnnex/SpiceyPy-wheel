@@ -36,14 +36,8 @@ script:
 - ls -lahtr ./SpiceyPy/
 - cd ./SpiceyPy/
 - cibuildwheel --output-dir ./wheelhouse
-- ls -lahtr /tmp/delocated_wheel/
-- ls -lahtr /project/spiceypy/
-- ls -lahtr /project/spiceypy/utils/
-- ls -lahtr /project/spiceypy/
-- ls -lahtr ./spiceypy/utils/
-- ls -lahtr ./spiceypy/dist
 - ls -lahtr ./
-- ls ./wheelhouse/
+- ls -lahtr ./wheelhouse/
 
 after_success:
 - ls -lahtr wheelhouse/
